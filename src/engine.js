@@ -14,6 +14,9 @@ var FISH = ['대구살', '가자미살', '동태살', '새우살', '대게살'];
 var STAR = ['밀가루', '달걀', '땅콩버터', '플레인 요거트', '두부', '참깨', '메밀', '호두 가루', '대구살', '새우살', '대게살'];
 var SPECIAL = { '밀가루': ['3g', '1작은술 그대로 넣기', '1/4작은술을 물 1큰술에 개어 전자레인지 20~30초 익혀 섞기 → 3일째 1작은술'], '달걀': ['1개', '풀어서 넣기, 끓으면서 완전히 익어요', '따로 12분 완숙 → 첫날 노른자·흰자 합쳐 1/4작은술, 3일째 1/4개'], '두부': ['40g', '손으로 으깨 넣기', '따로 1분 데쳐 → 첫날 1작은술, 3일째 15g'], '메밀': ['5g', '메밀가루로 넣기', '메밀가루 1/4작은술을 물에 개어 익혀 섞기 → 3일째 1작은술'], '땅콩버터': ['10g', '100% 제품, 데운 죽에 녹이기', '첫날 1/8작은술 → 3일째 1작은술, 데운 죽에 녹여서'], '참깨': ['한 꼬집/끼', '곱게 간 것을 얹기', '첫날 한 꼬집 → 3일째 1/2작은술, 곱게 갈아서'], '호두 가루': ['한 꼬집/끼', '아주 고운 가루를 얹기', '첫날 한 꼬집 → 3일째 1/2작은술, 아주 곱게'], '플레인 요거트': ['1~2큰술/일', '조리 없이 따로 먹이기', '첫날 1작은술 → 3일째 1큰술, 조리 없이'] };
 var MNAME = { '소고기': '소고기 다짐육 (우둔·홍두깨)', '돼지고기': '돼지고기 다짐육 (안심)', '닭고기': '닭고기 다짐육 (가슴살)' };
+var VLEAF = ['청경채', '시금치', '배추', '양배추', '근대', '아욱', '부추', '적채', '쪽파', '대파', '미역'], VHARD = ['단호박', '감자', '당근', '무', '연근', '우엉', '비트', '고구마'], VMUSH = ['새송이버섯', '표고버섯', '느타리버섯', '양송이버섯'];
+var VTRIM = { '청경채': '잎만 떼어 씻기', '시금치': '잎만 떼어 씻기', '배추': '연한 잎만, 두꺼운 심 빼기', '양배추': '잎만, 두꺼운 심 빼기', '근대': '잎만 떼어 씻기', '아욱': '잎만, 껍질 벗겨 주무르듯 씻기', '부추': '연한 윗부분만', '적채': '잎만, 심 빼기', '쪽파': '흰 부분 위주로', '대파': '흰 부분만', '미역': '20분 불려 여러 번 헹구기', '단호박': '껍질·씨 빼기', '감자': '껍질 벗기고 싹 난 곳 도려내기', '당근': '껍질 벗기기', '무': '껍질 벗기기', '연근': '껍질 벗기기', '우엉': '껍질 긁어내기', '비트': '껍질 벗기기', '고구마': '껍질 벗기기', '애호박': '씨 많은 가운데는 빼고 껍질째', '브로콜리': '꽃송이 부분만', '콜리플라워': '꽃송이 부분만', '양파': '겉껍질 벗기기', '가지': '껍질 벗기기', '파프리카': '껍질·씨 빼기', '검은콩': '전날 밤 불려 껍질 벗기기', '완두콩': '꼬투리에서 빼 껍질 벗기기', '숙주나물': '머리·꼬리 떼기', '콩나물': '머리·꼬리 떼기', '토마토': '데쳐서 껍질·씨 빼기', '아스파라거스': '아래 단단한 부분 자르고 껍질 벗기기' };
+function vMin(n) { return VHARD.indexOf(n) >= 0 ? 6 : (VLEAF.indexOf(n) >= 0 ? 1 : (VMUSH.indexOf(n) >= 0 ? 2 : 3)); }
 function catOf(n) { if (GRAIN.indexOf(n) >= 0) return 'g'; if (MEAT.indexOf(n) >= 0) return 'm'; if (FISH.indexOf(n) >= 0) return 'f'; if (FRUIT.indexOf(n) >= 0) return 'p'; if (SPECIAL[n]) return 'A'; return 'v'; }
 var MENU = [
 ['햅쌀 쌀죽', null, [], [], [], []],
@@ -82,11 +85,11 @@ var MENU = [
 ['대구살 양송이 애호박죽', '대구살', ['양파', '양송이버섯', '애호박'], [], ['두부'], []],
 ['닭고기 아욱 감자죽', '닭고기', ['아욱', '감자'], [], [], []]];
 var PH = [
-{ s: U(2026, 10, 29), name: '초기 ①', R: 10, cube: 'in', m0: 20, m1: 60, meat: 10, base: 0.75, tex: '쌀알이 조금 남는 질감 있는 죽', por: '생쌀 1 : 물 10 (8배죽 수준)', cubeTex: '초기용 큐브(퓨레형)', mode: '쌀알이 남는 죽 모드(건강죽 등)로 돌려요. 너무 거칠면 믹서를 3~5초만 더 돌려요.', b0: 210, b1: 180 },
-{ s: U(2026, 11, 13), name: '초기 ②', R: 7.5, cube: 'in', m0: 60, m1: 80, meat: 12, base: 0.65, tex: '1~2mm 알갱이가 보이는 죽', por: '생쌀 1 : 물 7.5 (6배죽 수준)', cubeTex: '1~2mm 다짐 큐브', mode: '쌀알이 남는 죽 모드로 돌리고, 추가 믹서는 돌리지 않아요.', b0: 180, b1: 160 },
-{ s: U(2026, 11, 25), name: '초기 ③', R: 6, cube: 'in', m0: 80, m1: 100, meat: 15, base: 0.6, tex: '2~3mm 알갱이(갈기 졸업)', por: '생쌀 1 : 물 6 (5배죽 수준)', cubeTex: '중기용 큐브(2~3mm)', mode: '쌀알이 남는 죽 모드로 돌리고, 추가 믹서는 돌리지 않아요.', b0: 160, b1: 140 },
-{ s: U(2026, 12, 10), name: '중기 ①', R: 5, cube: 'after', m0: 90, m1: 120, meat: 10, base: 0.55, tex: '3~5mm 알갱이', por: '생쌀 1 : 물 5 (4배죽 수준)', cubeTex: '중기용 큐브(3~5mm)', mode: '쌀알이 남는 죽 모드로 돌려요. 채소 큐브는 칼날에 갈리지 않도록 끝난 뒤에 넣어요.', b0: 150, b1: 120 },
-{ s: U(2027, 1, 12), name: '중기 ②', R: 4.5, cube: 'after', m0: 120, m1: 150, meat: 13, base: 0.5, tex: '5~7mm 알갱이, 된죽', por: '생쌀 1 : 물 4.5 (된죽)', cubeTex: '후기용 큐브(5~7mm)', mode: '쌀알이 남는 죽 모드로 돌려요. 바닥에 눌어붙으면 다음엔 물을 10% 늘려요.', b0: 120, b1: 100 },
+{ s: U(2026, 10, 29), name: '초기 ①', R: 10, cube: 'in', m0: 20, m1: 60, meat: 10, base: 0.75, tex: '쌀알이 조금 남는 질감 있는 죽', por: '생쌀 1 : 물 10 (8배죽 수준)', cubeTex: '초기용 큐브(퓨레형)', vsize: '1cm 이하로 작게 썰기(칼날이 갈아줘요)', mode: '쌀알이 남는 죽 모드(건강죽 등)로 돌려요. 너무 거칠면 믹서를 3~5초만 더 돌려요.', b0: 210, b1: 180 },
+{ s: U(2026, 11, 13), name: '초기 ②', R: 7.5, cube: 'in', m0: 60, m1: 80, meat: 12, base: 0.65, tex: '1~2mm 알갱이가 보이는 죽', por: '생쌀 1 : 물 7.5 (6배죽 수준)', cubeTex: '1~2mm 다짐 큐브', vsize: '1~2mm로 잘게 다지기', mode: '쌀알이 남는 죽 모드로 돌리고, 추가 믹서는 돌리지 않아요.', b0: 180, b1: 160 },
+{ s: U(2026, 11, 25), name: '초기 ③', R: 6, cube: 'in', m0: 80, m1: 100, meat: 15, base: 0.6, tex: '2~3mm 알갱이(갈기 졸업)', por: '생쌀 1 : 물 6 (5배죽 수준)', cubeTex: '중기용 큐브(2~3mm)', vsize: '2~3mm로 다지기', mode: '쌀알이 남는 죽 모드로 돌리고, 추가 믹서는 돌리지 않아요.', b0: 160, b1: 140 },
+{ s: U(2026, 12, 10), name: '중기 ①', R: 5, cube: 'after', m0: 90, m1: 120, meat: 10, base: 0.55, tex: '3~5mm 알갱이', por: '생쌀 1 : 물 5 (4배죽 수준)', cubeTex: '중기용 큐브(3~5mm)', vsize: '3~5mm로 다지기', mode: '쌀알이 남는 죽 모드로 돌려요. 채소는 칼날에 갈리지 않도록 따로 익혀 끝난 뒤에 넣어요.', b0: 150, b1: 120 },
+{ s: U(2027, 1, 12), name: '중기 ②', R: 4.5, cube: 'after', m0: 120, m1: 150, meat: 13, base: 0.5, tex: '5~7mm 알갱이, 된죽', por: '생쌀 1 : 물 4.5 (된죽)', cubeTex: '후기용 큐브(5~7mm)', vsize: '5~7mm로 다지기', mode: '쌀알이 남는 죽 모드로 돌려요. 바닥에 눌어붙으면 다음엔 물을 10% 늘려요.', b0: 120, b1: 100 },
 { s: U(2027, 2, 5), name: '후기', R: 4, cube: 'after', m0: 120, m1: 150, meat: 15, base: 0.45, tex: '7mm~1cm 알갱이, 된죽', por: '생쌀 1 : 물 4 (된죽)', cubeTex: '후기용 큐브(7mm~1cm)', mode: '쌀알이 남는 죽 모드로 돌려요. 바닥에 눌어붙으면 다음엔 물을 10% 늘려요.', b0: 0, b1: 0 },
 { s: U(2027, 4, 12), name: '완료기', R: 4, cube: 'after', m0: 150, m1: 180, meat: 18, base: 0.4, tex: '1cm 알갱이, 된죽', por: '생쌀 1 : 물 4 (된죽)', cubeTex: '완료기용 큐브(1cm)', mode: '쌀알이 남는 죽 모드로 돌려요. 바닥에 눌어붙으면 다음엔 물을 10% 늘려요.', b0: 0, b1: 0 }];
 function phOf(t) { var i = 0; for (var k = 0; k < PH.length; k++) { if (t >= PH[k].s) i = k; } return i; }
@@ -134,11 +137,12 @@ var rice = Math.max(15, base / ((1 + 0.95 * p.R) * 0.92)), water = r10(Math.max(
 var IN = '기계에 함께', rows = [], inNames = [], introNote = '', totalIn = rice + water + cubeIn;
 rows.push({ name: '햅쌀 (생쌀)' + (it === '쌀' ? ' · NEW' : ''), raw: r5(rice * (1 - mix)) + 'g', done: IN, prep: '씻어서 물기만 빼고 불리지 않기' });
 for (var g2 = 0; g2 < grains.length; g2++) { var gn = grains[g2]; rows.push({ name: gn + (it === gn ? ' · NEW' : ''), raw: r5(rice * mix / grains.length) + 'g', done: IN, prep: gn === '오트밀' ? '그대로 넣기' : (gn === '수수' ? '씻어서 넣기' : '통곡물이라 전날 밤 물에 불려두기') }); }
-rows.push({ name: '물', raw: water + 'g', done: IN, prep: p.por + ' · 햅쌀이라 5% 줄인 양' + (cubeIn ? ', 큐브 수분만큼 뺀 양' : '') });
+rows.push({ name: '물', raw: water + 'g', done: IN, prep: p.por + ' · 햅쌀이라 5% 줄인 양' + (cubeIn ? ', 채소 수분만큼 뺀 양' : '') });
 if (pc === 'm') { var mg = Math.max(10, Math.round(meatC / 0.75 / 10) * 10); totalIn += mg; rows.push({ name: MNAME[prot] + (it === prot ? ' · NEW' : ''), raw: mg + 'g', done: IN, prep: '10g 소분 큐브 ' + (mg / 10) + '개 · 전날 밤 냉장 해동 · 물에 풀어 넣으면 뭉치지 않아요' }); }
 if (pc === 'f') { var fg = Math.round(fishRaw); totalIn += fg; rows.push({ name: (it === prot && STAR.indexOf(prot) >= 0 ? '★ ' : '') + prot + ' (조리 전 무게)' + (it === prot ? ' · NEW' : ''), raw: fg + 'g', done: IN, prep: '시판 생선 큐브나 순살, 가시 꼭 확인 · 전날 밤 냉장 해동 · 한 끼 ' + fishPer(s) + 'g꼴이라 한 주 생선 ' + (s < DOL ? '50' : '100') + 'g 이하로 맞춰져요' }); }
 var share = tops.length ? topC / tops.length : 0;
-for (var t2 = 0; t2 < tops.length; t2++) { var tn = tops[t2]; if (p.cube === 'in') inNames.push(tn); rows.push({ name: tn + ' 큐브' + (it === tn ? ' · NEW' : ''), raw: Math.max(10, r5(share)) + 'g', done: p.cube === 'in' ? IN : '다 된 뒤 섞기', prep: p.cubeTex + ' · 전날 밤 냉장 해동' }); }
+var FRESH = s < LATE;
+for (var t2 = 0; t2 < tops.length; t2++) { var tn = tops[t2]; if (p.cube === 'in') inNames.push(tn); rows.push({ name: tn + (FRESH ? ' (생채소)' : ' 큐브') + (it === tn ? ' · NEW' : ''), raw: Math.max(10, r5(share)) + 'g', done: p.cube === 'in' ? IN : (FRESH ? '데쳐서 다 된 뒤 섞기' : '다 된 뒤 섞기'), prep: FRESH ? ((VTRIM[tn] || '깨끗이 씻기') + ' → ' + p.vsize + (p.cube === 'in' ? '' : ' → 끓는 물에 ' + vMin(tn) + '분 데치기') + ' · 손질 후 무게') : (p.cubeTex + ' · 전날 밤 냉장 해동') }); }
 for (var e2 = 0; e2 < MN[4].length; e2++) { var en = MN[4][e2]; inNames.push(en); rows.push({ name: en, raw: SPECIAL[en][0], done: IN, prep: SPECIAL[en][1] }); }
 if (itc === 'A') { rows.push({ name: '★ ' + it + ' · NEW', raw: SPECIAL[it][0], done: '먹일 때 따로', prep: SPECIAL[it][2] }); introNote = '★ ' + jo(it, '은', '는') + ' 처음 먹는 재료라 레시피에 넣지 않고 이번 3일 동안 낮 끼니에 따로 줘요. ' + SPECIAL[it][2] + '.'; }
 for (var e3 = 0; e3 < MN[5].length; e3++) { var pn = MN[5][e3]; rows.push({ name: pn + ' (선택)', raw: SPECIAL[pn][0], done: '먹이기 직전', prep: '토핑처럼 얹어도 되고 빼도 돼요' }); }
@@ -146,11 +150,16 @@ if (itc === 'p') { rows.push({ name: it + ' (생과일) · NEW', raw: '하루 20
 if (b >= 4) rows.push({ name: '카놀라유 (선택)', raw: '2~3방울/끼', done: '먹이기 직전', prep: '상온 보관, 데운 죽에 섞기' });
 var am = US.filter(function (u) { return u.slot !== 'pm'; }), pmU = US.filter(function (u) { return u.slot === 'pm'; });
 var steps = [];
-if (prot || tops.length) steps.push('전날 밤: ' + [prot ? (pc === 'f' ? '생선 큐브' : '고기 큐브') : '', tops.length ? '채소 큐브' : ''].filter(function (x) { return x; }).join('와 ') + '를 냉장실로 옮겨 해동해요. 급하면 전자레인지 해동 30초.');
+if (prot || (tops.length && !FRESH)) steps.push('전날 밤: ' + [prot ? (pc === 'f' ? '생선 큐브' : '고기 큐브') : '', (tops.length && !FRESH) ? '채소 큐브' : ''].filter(function (x) { return x; }).join('와 ') + '를 냉장실로 옮겨 해동해요. 급하면 전자레인지 해동 30초.');
 steps.push('햅쌀' + (grains.length ? '과 ' + grains.join('·') : '') + '을 씻어 물기를 빼요. 햅쌀은 불리지 않아요.');
+if (FRESH && tops.length) {
+  var vs = tops.slice().sort(function (a, b2) { return vMin(b2) - vMin(a); });
+  if (p.cube === 'in') steps.push('채소(' + tops.join('·') + ')를 손질해 ' + p.vsize.replace('(칼날이 갈아줘요)', '') + '. 손질한 뒤 저울로 무게를 재요. 날것 그대로 기계에 넣으면 죽과 함께 익어요.');
+  else steps.push('채소(' + tops.join('·') + ')를 손질해 ' + p.vsize.replace('다지기', '다져요') + '. 작은 냄비에 물을 끓여 단단한 채소부터 ' + vs.map(function (v) { return v + ' ' + vMin(v) + '분'; }).join(' → ') + ' 순서로 넣어 데치고, 체에 밭쳐 물기를 빼요. 죽이 되는 동안 하면 시간이 맞아요.');
+}
 steps.push('두유제조기에 쌀' + (grains.length ? '·잡곡' : '') + (prot ? ' → ' + (pc === 'f' ? '생선' : '고기') : '') + (inNames.length ? ' → ' + inNames.join('·') : '') + ' → 물 ' + water + 'g 순서로, 용기를 저울에 올린 채 영점을 맞춰 가며 넣어요. 총 약 ' + r10(totalIn) + 'g예요. 두유 MAX 선을 넘지 않는지 확인해요.');
 steps.push(p.mode);
-if (p.cube === 'after' && tops.length) steps.push('끝나면 해동한 채소 큐브(' + tops.join('·') + ')를 넣고 저은 뒤, 칼날이 돌지 않는 가열 모드로 3~5분 데워요.');
+if (p.cube === 'after' && tops.length) steps.push('끝나면 ' + (FRESH ? '데친 채소(' : '해동한 채소 큐브(') + tops.join('·') + ')를 넣고 저은 뒤, 칼날이 돌지 않는 가열 모드로 3~5분 데워요.');
 steps.push('바로 다른 용기로 옮기고, 기계는 곧장 물로 헹군 뒤 세척 모드를 돌려요. 바닥에 눌어붙기 쉬워요.');
 steps.push(nMeals + '끼로 나눠요(한 끼 약 ' + r5(total / nMeals) + 'g). ' + (pmU.length ? (s >= LATE ? '아침' : '낮') + ' 끼니 ' + am.length + '개는 ' + md(am[0].t) + '~' + md(am[am.length - 1].t) + ', ' + (s >= LATE || pmU[0].t >= LATE ? '저녁' : '오후') + ' 끼니 ' + pmU.length + '개는 ' + md(pmU[0].t) + '~' + md(pmU[pmU.length - 1].t) + '에 먹어요. 날짜 라벨을 붙여요.' : md(am[0].t) + '~' + md(am[am.length - 1].t) + '에 한 끼씩 먹어요.'));
 var store = ['1일차 분량만 냉장하고 나머지는 식히자마자 한 끼씩 냉동해요. 조리하고 6일 안에 먹어요.', '먹기 전날 밤 냉장실로 옮기거나 전자레인지로 김이 날 때까지 데운 뒤 체온 정도로 식혀요. 저어서 뜨거운 곳이 없는지 확인해요.'];
