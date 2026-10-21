@@ -1,5 +1,5 @@
 (function(){
-var VERSION='1.3.1', BUILD='2026-10-20';
+var VERSION='1.3.2', BUILD='2026-10-21';
 var D=864e5, S=Date.UTC(2026,9,29), END=Date.UTC(2027,4,31);
 function U(y,m,d){return Date.UTC(y,m-1,d);}
 var MONTHS=[[2026,11],[2026,12],[2027,1],[2027,2],[2027,3],[2027,4],[2027,5]];
