@@ -1,5 +1,5 @@
 (function(){
-var VERSION='1.3.0', BUILD='2026-10-20';
+var VERSION='1.3.1', BUILD='2026-10-20';
 var D=864e5, S=Date.UTC(2026,9,29), END=Date.UTC(2027,4,31);
 function U(y,m,d){return Date.UTC(y,m-1,d);}
 var MONTHS=[[2026,11],[2026,12],[2027,1],[2027,2],[2027,3],[2027,4],[2027,5]];
@@ -122,7 +122,7 @@ function renderCal(){
     if(!c.show){h+='<div class="cell empty"></div>';return;}
     var ms=msOf(c.t,c);
     var cls='cell'+(c.sun?' sun':'')+(c.cook?' cook':'')+(c.t===TODAY?' today':'');
-    var tag=c.label?'<span class="tag'+(c.isNewA?' star':'')+'">'+esc(SHORT[c.label]||c.label)+'</span>':(ms.length?'<span class="tag ms">'+esc(ms[0].replace('만 ',''))+'</span>':'');
+    var tag=c.label?'<span class="tag'+(c.isNewA?' star':'')+'">'+(c.isNewA?'★':'')+esc(SHORT[c.label]||c.label)+'</span>':(ms.length?'<span class="tag ms">'+esc(ms[0].replace('만 ',''))+'</span>':'');
     var dots=(c.fish?'<i class="f"></i>':'')+((c.label&&ms.length)||ms.length>1?'<i class="m"></i>':'');
     h+='<button type="button" class="'+cls+'" data-t="'+c.t+'" aria-label="'+esc(c.aria)+'"><span class="num'+(c.dayText.indexOf('/')>=0?' sm':'')+'">'+esc(c.dayText)+'</span>'+tag+'<span class="dots">'+dots+'</span></button>';
   });
