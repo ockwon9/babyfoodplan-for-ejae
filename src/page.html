@@ -147,6 +147,12 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 .daynav button:disabled{opacity:.35}
 .daynav .n{text-align:right}
 
+.chk{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+.chk li{margin:0}
+.chk button{width:100%;display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;align-items:start;padding:9px 10px;border-radius:10px;background:var(--sunk);text-align:left}
+.chk .box{width:22px;height:22px;border-radius:7px;border:2px solid var(--line);background:var(--surface);display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--accent-fg)}
+.chk button[aria-pressed="true"] .box{background:var(--accent);border-color:var(--accent)}
+.chk button[aria-pressed="true"] span:last-child{color:var(--muted);text-decoration:line-through}
 /* 조리법 */
 .rhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .rhead .t{text-align:center;min-width:0}
@@ -316,6 +322,7 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
   <div class="card">
     <h3>변경 기록</h3>
     <ul class="fine" style="color:var(--fg)">
+      <li><b>1.4.0</b> 10월 달력과 이유식 D-day, 10/23~10/28 준비 일정·체크리스트</li>
       <li><b>1.3.3</b> 초기·중기는 생채소를 직접 손질·조리, 채소 큐브는 후기부터</li>
       <li><b>1.3.2</b> 앱 아이콘을 얼굴 누끼 + 하트 배경으로 교체</li>
       <li><b>1.3.1</b> 이재 일러스트 앱 아이콘, 달력의 알레르기 식품에 ★ 표시</li>

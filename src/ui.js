@@ -1,8 +1,8 @@
 (function(){
-var VERSION='1.3.3', BUILD='2026-10-21';
+var VERSION='1.4.0', BUILD='2026-10-23';
 var D=864e5, S=Date.UTC(2026,9,29), END=Date.UTC(2027,4,31);
 function U(y,m,d){return Date.UTC(y,m-1,d);}
-var MONTHS=[[2026,11],[2026,12],[2027,1],[2027,2],[2027,3],[2027,4],[2027,5]];
+var MONTHS=[[2026,10],[2026,11],[2026,12],[2027,1],[2027,2],[2027,3],[2027,4],[2027,5]];
 var SHORT={'플레인 요거트':'요거트','호두 가루':'호두','새송이버섯':'새송이','느타리버섯':'느타리','표고버섯':'표고','양송이버섯':'양송이','아스파라거스':'아스파라','콜리플라워':'콜리플','숙주나물':'숙주','땅콩버터':'땅콩','가자미살':'가자미','대구살':'대구','동태살':'동태','새우살':'새우','대게살':'대게'};
 var MEATS=['소고기','닭고기','돼지고기'], FISHES=['대구살','가자미살','동태살','새우살','대게살'], GRAINS=['쌀','오트밀','현미','수수','흑미'], FRUITS=['사과','바나나','배','블루베리','딸기','키위','아보카도','귤','망고'];
 var STARS=['밀가루','달걀','땅콩버터','플레인 요거트','두부','참깨','메밀','호두 가루','대구살','새우살','대게살'];
@@ -39,10 +39,23 @@ var REHEAT=['냉동한 죽은 먹기 전날 밤 냉장실로 옮겨 해동해요
 var PHS=[U(2026,10,29),U(2026,11,13),U(2026,11,25),U(2026,12,10),U(2027,1,12),U(2027,2,5),U(2027,4,12)];
 function phIdx(t){var i=0;for(var k=0;k<PHS.length;k++)if(t>=PHS[k])i=k;return i;}
 
+var PRE=U(2026,10,1);
+var PREP={};
+PREP[U(2026,10,23)]={title:'준비물 점검·주문',items:['두유제조기 (가열 모드·죽 모드 있는 것, 1L 안팎)','주방 저울 (1g 단위)','이유식 숟가락 (얕은 실리콘) 2~3개','빨대컵 또는 작은 컵','턱받이와 이유식 의자','소분 용기(1회분)·10g 얼음틀·날짜 라벨'],note:'배송에 2~3일 걸리니 오늘 주문하면 주말에 받아 길들일 수 있어요.'};
+PREP[U(2026,10,24)]={title:'장보기 계획',items:['햅쌀 소포장 (1kg이면 충분)','오트밀, 무첨가 퀵오트 (11/1부터)','카놀라유 작은 병 (11/10부터, 선택)','소고기 우둔·홍두깨 다짐육은 11/3에 사서 10g씩 소분 (11/4 첫 사용)','첫 2주 채소는 조리 전날 사기: 애호박 11/7 · 청경채 11/10 · 양배추 11/13 · 브로콜리 11/16'],note:'처음 3일은 쌀만 먹어요. 재료는 한꺼번에 사지 말고 조리 전날 조금씩 사요.'};
+PREP[U(2026,10,25)]={title:'두유제조기 길들이기',items:['부품을 세척하고 물만 넣어 한 번 돌리기 (새 기계 냄새 빼기)','죽 모드 소요 시간과 MAX·MIN 눈금 위치 확인','시험 조리: 햅쌀 15g + 물 140g, 10/29와 같은 양으로 돌려 보기','쌀알이 조금 남는지 확인하고, 너무 곱게 갈리면 다른 죽 모드도 시험'],note:'시험 조리한 죽은 맛만 보고 버려요. 결과를 보고 10/29에 쓸 모드를 정해요.'};
+PREP[U(2026,10,26)]={title:'자리·루틴 연습',items:['12:00 분유 전에 이유식 의자에 5분 앉혀 보기','턱받이를 하고 빈 숟가락을 손에 쥐여주기','먹일 자리 정하기 (밝고 조용한 곳, 텔레비전은 끄기)'],note:'이유식은 12:00 분유 바로 앞에 먹여요. 이번 주에 그 시간에 앉는 습관을 들여요.'};
+PREP[U(2026,10,27)]={title:'안전 준비',items:['집 근처 소아과 평일 진료 시간 확인 (새 재료는 평일 낮에 시작)','알레르기 증상 알아두기: 두드러기, 구토, 설사, 기침·쌕쌕거림','숨쉬기 힘들거나 입술·얼굴이 붓거나 축 처지면 바로 119','비타민D를 계속 먹이고 있는지 확인','반응 기록 방법 정하기 (날짜·재료·양·반응을 사진이나 메모로)'],note:'처음 먹는 재료는 3일 동안 같은 재료로 반응을 봐요.'};
+PREP[U(2026,10,28)]={title:'첫 조리 전날',items:['두유제조기·저울·용기·숟가락 세척과 소독','햅쌀 15g 계량해 두기 (불리지 않아요)','내일 일정 확인: 오전에 조리(30~40분) → 12:00 첫 이유식 → 바로 분유','첫날은 1~2숟가락이면 충분, 거부해도 괜찮다고 마음먹기'],note:'내일 레시피는 조리법 탭에서 미리 볼 수 있어요.'};
+function prepCount(t){var p=PREP[t];if(!p)return [0,0];var n=0;p.items.forEach(function(x,i){if(prepDone[t+'_'+i])n++;});return [n,p.items.length];}
+function preCell(t){var d=new Date(t);return {show:true,t:t,pre:true,dayText:String(d.getUTCDate()),sun:d.getUTCDay()===0,cook:false,fish:false,label:'',isNew:false,isNewA:false,mile:false,isObs:false,aria:md(t)+' 준비'};}
+
 var LS={get:function(k){try{return localStorage.getItem(k);}catch(e){return null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
 var prof={name:'이재',sex:'girl',birth:'2026-05-11'};
 try{var sp=JSON.parse(LS.get('yj.profile')||'null');if(sp&&sp.name&&/^\d{4}-\d{2}-\d{2}$/.test(sp.birth)){prof=sp;}}catch(e){}
 var palette=LS.get('yj.palette')||'green';
+var prepDone={};try{prepDone=JSON.parse(LS.get('yj.prep')||'{}')||{};}catch(e){}
+
 var BIRTH,DOL,XMS;
 function applyProfile(){
   var p=prof.birth.split('-').map(Number);BIRTH=U(p[0],p[1],p[2]);DOL=U(p[0]+1,p[1],p[2]);
@@ -52,7 +65,7 @@ function applyProfile(){
   document.getElementById('brand').textContent=prof.name+' 이유식';
   document.title=prof.name+' 이유식';
   document.querySelectorAll('.nm').forEach(function(e){e.textContent=prof.name;});
-  document.getElementById('meta').innerHTML='<b>D+'+dplus(TODAY)+'</b> · '+esc(dolShort(TODAY))+' · '+esc(ageLine(TODAY));
+  document.getElementById('meta').innerHTML=(TODAY<S?'<b>이유식 D-'+Math.round((S-TODAY)/D)+'</b> · D+'+dplus(TODAY):'<b>D+'+dplus(TODAY)+'</b> · '+esc(dolShort(TODAY)))+' · '+esc(ageLine(TODAY));
   document.getElementById('profLine').textContent=prof.name+' · '+(prof.sex==='boy'?'남아':'여아')+' · '+prof.birth.replace(/-/g,'.')+'생';
   mcache={};
 }
@@ -61,14 +74,15 @@ function applyPalette(){if(palette==='green')document.documentElement.removeAttr
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 function todayT(){var n=new Date();return Date.UTC(n.getFullYear(),n.getMonth(),n.getDate());}
-function clampT(t){return t<S?S:(t>END?END:t);}
+function clampT(t){return t<PRE?PRE:(t>END?END:t);}
 function md(t){var d=new Date(t);return (d.getUTCMonth()+1)+'/'+d.getUTCDate();}
 function mdw(t){var d=new Date(t);return md(t)+'('+WD[d.getUTCDay()]+')';}
-function monthIdx(t){var d=new Date(t),y=d.getUTCFullYear(),m=d.getUTCMonth()+1;if(y===2026&&m===10)m=11;for(var i=0;i<MONTHS.length;i++)if(MONTHS[i][0]===y&&MONTHS[i][1]===m)return i;return t<S?0:MONTHS.length-1;}
+function monthIdx(t){var d=new Date(t),y=d.getUTCFullYear(),m=d.getUTCMonth()+1;for(var i=0;i<MONTHS.length;i++)if(MONTHS[i][0]===y&&MONTHS[i][1]===m)return i;return t<PRE?0:MONTHS.length-1;}
 function run(mi,sel,tab){var c=new Component();c.props={year:String(MONTHS[mi][0]),month:String(MONTHS[mi][1])};c.state={sel:sel,tab:tab};c.setState=function(){};return c.renderVals();}
 var mcache={};
-function cellsOf(mi){if(!mcache[mi])mcache[mi]=run(mi,null,null);return mcache[mi];}
-function cellAt(t){if(t<S||t>END)return null;var o=cellsOf(monthIdx(t));for(var i=0;i<o.cells.length;i++)if(o.cells[i].t===t)return o.cells[i];return null;}
+function cellsOf(mi){if(!mcache[mi]){var o=run(mi,null,null),y=MONTHS[mi][0],m=MONTHS[mi][1],m0=U(y,m,1),g0=m0-new Date(m0).getUTCDay()*D;
+  o.cells=o.cells.map(function(c,i){var t=g0+i*D;if(!c.show&&t>=m0&&t<S&&new Date(t).getUTCMonth()===m-1)return preCell(t);return c;});mcache[mi]=o;}return mcache[mi];}
+function cellAt(t){if(t<PRE||t>END)return null;var o=cellsOf(monthIdx(t));for(var i=0;i<o.cells.length;i++)if(o.cells[i].t===t)return o.cells[i];return null;}
 function dplus(t){return Math.round((t-BIRTH)/D)+1;}
 function dolShort(t){var n=Math.round((DOL-t)/D);return n>0?'돌 D-'+n:(n===0?'첫 돌':'돌+'+(-n));}
 function ageLine(t){var b=new Date(BIRTH),d=new Date(t),by=b.getUTCFullYear(),bm=b.getUTCMonth(),bd=b.getUTCDate();
@@ -86,8 +100,10 @@ function freshList(t){var o=recipeOf(t),a=o.rRows.filter(function(r){return /생
 function buildAlerts(){
   var A=[], T=TODAY, c0=cellAt(T);
   if(T<S){var n=Math.round((S-T)/D);
-    A.push({k:'mile',ic:'D-'+n,b:'첫 이유식 '+mdw(S)+' · 햅쌀 쌀죽',s:'12:00 분유 전에 1~2숟가락부터. 모자란 양은 분유로 채워요.',t:S});
-    A.push({k:'',ic:'준비',b:'시작 전에 준비할 것',s:'두유제조기(가열 모드 있는 것) · 주방 저울 · 햅쌀 · 이유식 숟가락 · 빨대컵 · 소분 용기',v:'recipe'});}
+    A.push({k:'mile',ic:'D-'+n,b:'첫 이유식 '+mdw(S)+' · 햅쌀 쌀죽',s:'12:00 분유 전에 1~2숟가락부터. 모자란 양은 분유로 채워요.',v:'recipe',rt:S});
+    if(PREP[T]){var pc=prepCount(T);A.push({k:'obs',ic:'오늘',b:'오늘 준비: '+PREP[T].title,s:pc[0]+'/'+pc[1]+' 완료 · '+PREP[T].items.slice(0,2).join(' · '),t:T});}
+    else{var nx=null;for(var q2=T;q2<S;q2+=D)if(PREP[q2]){nx=q2;break;}if(nx)A.push({k:'obs',ic:'준비',b:md(nx)+'부터 준비 시작: '+PREP[nx].title,s:PREP[nx].items.slice(0,2).join(' · '),t:nx});}
+    if(PREP[T+D])A.push({k:'',ic:'내일',b:'내일 준비: '+PREP[T+D].title,s:PREP[T+D].items.slice(0,2).join(' · '),t:T+D});}
   var tm=T+D, ct=cellAt(tm);
   if(c0&&c0.cook){var r=recipeOf(T);A.push({k:'cook',ic:'오늘',b:'오늘 조리: '+r.rTitle.split(' · ')[0],s:r.rTitle.split(' · ')[2]+' · '+r.rSub.split(' · ')[0],v:'recipe',rt:T});}
   if(ct&&ct.cook){A.push({k:'cook',ic:'내일',b:'내일 조리: '+ct.sumText,s:'오늘 밤 냉장 해동 · '+(thawList(tm)||'해동할 큐브 없음')+freshList(tm),v:'recipe',rt:tm});}
@@ -115,7 +131,7 @@ function renderAlerts(){
 /* 달력 */
 function renderCal(){
   var o=cellsOf(st.mi), y=MONTHS[st.mi][0], m=MONTHS[st.mi][1];
-  document.getElementById('mTitle').innerHTML=esc(y+'년 '+(st.mi===0?'10–11월':m+'월'))+'<small>'+esc(o.phaseText)+'</small>';
+  document.getElementById('mTitle').innerHTML=esc(y+'년 '+m+'월')+'<small>'+esc((st.mi===0?'이유식 준비 → ':'')+o.phaseText)+'</small>';
   document.getElementById('mPrev').disabled=st.mi===0;
   document.getElementById('mNext').disabled=st.mi===MONTHS.length-1;
   var h='';
@@ -123,7 +139,7 @@ function renderCal(){
     if(!c.show){h+='<div class="cell empty"></div>';return;}
     var ms=msOf(c.t,c);
     var cls='cell'+(c.sun?' sun':'')+(c.cook?' cook':'')+(c.t===TODAY?' today':'');
-    var tag=c.label?'<span class="tag'+(c.isNewA?' star':'')+'">'+(c.isNewA?'★':'')+esc(SHORT[c.label]||c.label)+'</span>':(ms.length?'<span class="tag ms">'+esc(ms[0].replace('만 ',''))+'</span>':'');
+    var tag=c.pre?(PREP[c.t]?'<span class="tag ms">D-'+Math.round((S-c.t)/D)+'</span>':''):c.label?'<span class="tag'+(c.isNewA?' star':'')+'">'+(c.isNewA?'★':'')+esc(SHORT[c.label]||c.label)+'</span>':(ms.length?'<span class="tag ms">'+esc(ms[0].replace('만 ',''))+'</span>':'');
     var dots=(c.fish?'<i class="f"></i>':'')+((c.label&&ms.length)||ms.length>1?'<i class="m"></i>':'');
     h+='<button type="button" class="'+cls+'" data-t="'+c.t+'" aria-label="'+esc(c.aria)+'"><span class="num'+(c.dayText.indexOf('/')>=0?' sm':'')+'">'+esc(c.dayText)+'</span>'+tag+'<span class="dots">'+dots+'</span></button>';
   });
@@ -131,6 +147,7 @@ function renderCal(){
 }
 /* 날짜 */
 function renderDay(){
+  if(st.sel<S){renderPreDay();return;}
   var t=st.sel, o=run(monthIdx(t),t,st.tab), c=cellAt(t), el=document.getElementById('day');
   var parts=o.mSub.split(' · ');
   setSub(o.mTitle.replace(/^\d+년 /,''),'D+'+dplus(t)+' · '+ageLine(t)+' · '+dolShort(t));
@@ -152,8 +169,20 @@ function renderDay(){
   }
   if(o.showRec)h+=recipeHTML(t,o,false);
   el.innerHTML=h+'</div>';
-  document.getElementById('dPrev').disabled=t<=S;
+  document.getElementById('dPrev').disabled=t<=PRE;
   document.getElementById('dNext').disabled=t>=END;
+}
+function renderPreDay(){
+  var t=st.sel,n=Math.round((S-t)/D),p=PREP[t],el=document.getElementById('day'),c=cellAt(t);
+  setSub(mdw(t).replace('(',' (').replace(')',')').replace(/^(\d+)\/(\d+)/,'$1월 $2일'),'D+'+dplus(t)+' · '+ageLine(t)+' · '+dolShort(t));
+  var h='<div class="chips"><span class="chip">이유식 준비</span><span class="chip mile">첫 이유식 D-'+n+'</span>'+msOf(t,c).map(function(x){return '<span class="chip mile">'+esc(x)+'</span>';}).join('')+'</div><div class="dbody">';
+  if(p){var pc=prepCount(t);h+='<div><h3>오늘 할 일 · '+esc(p.title)+' ('+pc[0]+'/'+pc[1]+')</h3><ul class="chk">'+p.items.map(function(x,i){var k=t+'_'+i,on=!!prepDone[k];return '<li><button type="button" data-k="'+k+'" aria-pressed="'+on+'"><span class="box">'+(on?'✓':'')+'</span><span>'+esc(x)+'</span></button></li>';}).join('')+'</ul>'+(p.note?'<p class="sub" style="margin-top:8px">'+esc(p.note)+'</p>':'')+'</div>';}
+  else{var nx=null;for(var q=t+D;q<S;q+=D)if(PREP[q]){nx=q;break;}h+='<p class="sub">'+(nx?md(nx)+'부터 이유식 준비를 시작해요. 그 전까지는 지금처럼 분유만 먹어요.':'')+'</p>';}
+  h+='<div><h3>지금 수유</h3><ol class="tl"><li><time>08:00</time><span class="lb">분유</span><span class="amt">210ml</span></li><li><time>12:00</time><span class="lb">분유'+(n<=3?' · 이유식 의자에 앉아 보기':'')+'</span><span class="amt">210ml</span></li><li><time>16:00</time><span class="lb">분유</span><span class="amt">210ml</span></li><li><time>19:30</time><span class="lb">분유 → 밤잠</span><span class="amt">210ml</span></li></ol><p class="total">분유 하루 합계 약 840ml</p></div>';
+  var all=[];Object.keys(PREP).sort().forEach(function(k){var pc=prepCount(+k);all.push('<li><b>'+md(+k)+'</b> '+esc(PREP[k].title)+' <span class="sub">'+pc[0]+'/'+pc[1]+'</span></li>');});
+  h+='<div class="note"><h3 style="margin-bottom:4px">첫 이유식까지 준비 일정</h3><ul>'+all.join('')+'<li><b>10/29</b> 첫 조리 · 12:00 햅쌀 쌀죽 1~2숟가락</li></ul></div>';
+  el.innerHTML=h+'</div>';
+  document.getElementById('dPrev').disabled=t<=PRE;document.getElementById('dNext').disabled=false;
 }
 /* 레시피 본문 (날짜 화면·조리법 탭 공용) */
 function recipeHTML(t,o,full){
@@ -248,8 +277,8 @@ document.querySelector('.tabbar').addEventListener('click',function(e){var b=e.t
   if(v==='today'){if(pushed){pushed=false;st.ignorePop=true;try{history.back();}catch(err){}}openDay(TODAY,null,'today');return;}
   if(v==='recipe')st.rt=null;if(v==='roadmap')st.stage=null;if(v==='cal')st.mi=monthIdx(clampT(TODAY));go(v);});
 document.getElementById('grid').addEventListener('click',function(e){var b=e.target.closest('[data-t]');if(b)openDay(+b.dataset.t,null,'cal');});
-document.getElementById('day').addEventListener('click',function(e){var tb=e.target.closest('[data-tab]');if(tb){st.tab=tb.dataset.tab;renderDay();}});
-function stepDay(k){var t=st.sel+k*D;if(t<S||t>END)return;st.sel=t;st.tab=null;renderDay();window.scrollTo(0,0);}
+document.getElementById('day').addEventListener('click',function(e){var ck=e.target.closest('[data-k]');if(ck){var k=ck.dataset.k;prepDone[k]=!prepDone[k];LS.set('yj.prep',JSON.stringify(prepDone));renderDay();renderAlerts();return;}var tb=e.target.closest('[data-tab]');if(tb){st.tab=tb.dataset.tab;renderDay();}});
+function stepDay(k){var t=st.sel+k*D;if(t<PRE||t>END)return;st.sel=t;st.tab=null;renderDay();window.scrollTo(0,0);}
 document.getElementById('dPrev').addEventListener('click',function(){stepDay(-1);});
 document.getElementById('dNext').addEventListener('click',function(){stepDay(1);});
 function moveMonth(k){var mi=st.mi+k;if(mi<0||mi>=MONTHS.length)return;st.mi=mi;renderCal();}

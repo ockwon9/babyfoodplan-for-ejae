@@ -206,7 +206,7 @@ return { rows: rows, ml: ml, menu: menu, notes: notes, i: i };
 var MILE = { '10-29': '시작', '11-11': '만 6개월', '11-13': '6배죽', '11-25': '5배죽', '12-10': '중기·2끼', '12-26': '핑거푸드', '1-12': '된죽', '2-5': '후기·3끼', '4-12': '완료기', '5-11': '첫 돌' };
 var INFO = { '2026-11': '10/29 8배죽 → 11/13 6배죽 → 11/25 5배죽(갈기 졸업) · 3일마다 새 재료 1 · 채소는 새 채소 + 직전 채소 · ★ 첫날은 평일', '2026-12': '12/10부터 하루 2끼 6끼 슬라이딩: 낮엔 새 레시피, 오후엔 직전 레시피 · 12/28 첫 생선 · 12/26 핑거푸드', '2027-1': '1/12부터 된죽(5~7mm) · 소고기·닭고기 번갈아, 생선은 돌 전 주 50g 이하 · 숟가락 연습', '2027-2': '2/5부터 하루 3끼: 아침 새 레시피, 점심 오트밀포리지, 저녁 직전 레시피 · 영유아검진 예약', '2027-3': '3/13 돼지고기 시작 · 오트밀포리지에 과일을 돌아가며 · 컵으로 물 마시기', '2027-4': '4/12 완료기(1cm) · 간식 2회 · 젖병보다 컵', '2027-5': '5/11 첫 돌 · 이후 생선 주 100g까지 · 돌 이후 우유 전환은 소아과와 상의' };
 var mStart = U(Y, M, 1), mEnd = U(Y, M + 1, 1) - DAY;
-var aStart = (Y === 2026 && M === 11) ? S : mStart;
+var aStart = mStart;
 var gStart = aStart - new Date(aStart).getUTCDay() * DAY, gEnd = mEnd + (6 - new Date(mEnd).getUTCDay()) * DAY;
 var cells = [], phNames = [];
 for (var t = gStart; t <= gEnd; t += DAY) {
@@ -218,7 +218,7 @@ var isFirst = !!it && cook, obs = (it && t > d0) ? it + ' 관찰 ' + (Math.round
 var g = mealG(t), sum = cook ? batch(b).name : (t < TWO ? '이유식 1회 · ' + g + 'g' : (t < LATE ? '2끼 · 각 ' + g + 'g' : '3끼 · 오트밀 1'));
 cells.push({ show: true, blank: false, dayText: (t < mStart ? mo + '/' + dd : String(dd)), sun: dow === 0, wk: dow !== 0, mile: !!MILE[key], mileText: MILE[key] || '', cook: cook, fish: fishOnDay(t) > 0, isNew: isFirst && STAR.indexOf(it) < 0, isNewA: isFirst && STAR.indexOf(it) >= 0, label: isFirst ? it : '', isObs: !!obs, obsText: obs, sumText: sum, aria: md(t) + ' 자세히 보기', pick: (function (tt, ck) { return function () { self.setState({ sel: tt, tab: ck ? 'rec' : 'feed' }); }; })(t, cook) });
 }
-var mid = Math.max(aStart, U(Y, M, 15)), di0 = dayInfo(mid);
+var mid = Math.max(aStart, S, U(Y, M, 15)), di0 = dayInfo(mid);
 var routine = di0.rows.filter(function (r) { return r.time; }).map(function (r) { return r.time + ' ' + r.label.split(' · ')[0]; }).join(' · ');
 var out = { cells: cells, title: (Y === 2026 && M === 11) ? '2026. 10–11' : Y + '. ' + (M < 10 ? '0' : '') + M, phaseText: phNames.join(' → '), routine: routine, info: INFO[Y + '-' + M] || '', open: false, mTitle: '', mSub: '', isCook: false, tabRecOn: false, tabRecOff: false, tabFeedOn: false, tabFeedOff: false, showFeed: false, showRec: false, feedRows: [], feedTotal: '', menu: [], notes: [], rTitle: '', rSub: '', rRows: [], rSteps: [], rStore: [] };
 out.close = function () { self.setState({ sel: null }); };
